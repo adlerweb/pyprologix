@@ -173,7 +173,7 @@ class prologix(object):
         """
         out = ""
         for c in cmd:
-            if c == ord(10) or c == ord(13) or ord(27) or ord(43):
-                c = ord(27)+c
+            if c == chr(10) or c == chr(13) or chr(27) or chr(43):
+                c = chr(27)+c
             out = out + c
         return out
