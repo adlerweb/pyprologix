@@ -193,7 +193,23 @@ class hp3478a(object):
 
         return self.status
         
+    def setAutoZero(self, autoZero, noUpdate=False):
+        setVal = 0
+        if autoZero: setVal = 1
 
+        self.gpib.cmdWrite("Z"+str(autoZero))
+
+        if noUpdate:
+            if self.debug:
+                print("II AutoZero changed to " + setVal + " without verification.")
+            return setVal
+        else:
+            self.getStatus()
+            if autoZero != self.status.autoZero:
+                print("WW Error while changing AutoZero - tried to set " + autoZero + " but verification was " + self.status.autoZero)
+            elif self.debug:
+                print("II AutoZero successfully changed to " + self.status.autoZero)
+            return self.status.autoZero
 
 test = hp3478a(22, port, debug=True)
 
@@ -202,3 +218,4 @@ print(test.getStatus())
 print(test.getDigits(test.status.digits))
 print(test.getFunction(test.status.function))
 print(test.getRange())
+print(test.setAutoZero(0))
