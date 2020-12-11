@@ -50,6 +50,18 @@ class hp3478a(object):
     def getMeasure(self):
         return float(self.gpib.cmdPoll(" ", self.addr))
 
+    def getDigits(self, digits=None):
+        if digits == None:
+            digits = self.status.digits
+
+        if digits == 1:
+            return 5.5
+        elif digits == 2:
+            return 4.5
+        elif digits == 3:
+            return 3.5
+        return None
+
     def getStatus(self):
         status = self.gpib.cmdPoll("B", binary=True)
         
@@ -102,3 +114,4 @@ test = hp3478a(22, port, debug=True)
 
 print(test.getMeasure())
 print(test.getStatus())
+print(test.getDigits(test.status.digits))
