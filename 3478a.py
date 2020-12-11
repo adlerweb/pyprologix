@@ -1,5 +1,6 @@
 
 from prologix import prologix
+from time import sleep
 from dataclasses import dataclass
 import datetime
 
@@ -148,6 +149,7 @@ class hp3478a(object):
                 return None
 
     def getStatus(self):
+        #@TODO Reading is not reliable if device is busy
         status = self.gpib.cmdPoll("B", binary=True)
         
         #Update last readout time
@@ -198,17 +200,25 @@ class hp3478a(object):
         if autoZero: setVal = 1
 
         self.gpib.cmdWrite("Z"+str(autoZero))
+        clear = None
+        while clear == None or len(clear) <= 5:
+            #Wait and clear serial buffer
+            sleep(0.75)
+            clear = self.gpib.cmdPoll(" ")
+            print(len(clear))
+
+        sleep(0.75)
 
         if noUpdate:
-            if self.debug:
+            if self.gpib.debug:
                 print("II AutoZero changed to " + setVal + " without verification.")
             return setVal
         else:
             self.getStatus()
             if autoZero != self.status.autoZero:
-                print("WW Error while changing AutoZero - tried to set " + autoZero + " but verification was " + self.status.autoZero)
-            elif self.debug:
-                print("II AutoZero successfully changed to " + self.status.autoZero)
+                print("WW Error while changing AutoZero - tried to set " + str(autoZero) + " but verification was " + str(self.status.autoZero))
+            elif self.gpib.debug:
+                print("II AutoZero successfully changed to " + str(self.status.autoZero))
             return self.status.autoZero
 
 test = hp3478a(22, port, debug=True)
