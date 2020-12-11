@@ -177,6 +177,8 @@ class hp3478a(object):
         if port == None and prologixGpib == None:
             print("!! You must supply either a serial port or a prologix object")
 
+        self.addr = addr
+
         if prologixGpib is None:
             self.gpib = prologix(port=port, baud=baud, timeout=timeout, debug=debug)
         else:
