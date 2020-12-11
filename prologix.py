@@ -52,11 +52,15 @@ class prologix(object):
         if self.debug:
             print(">> " + cmd)
 
-    def cmdPoll(self, cmd, addr=None):
+    def cmdPoll(self, cmd, addr=None, binary=False):
         self.cmdWrite(cmd, addr)
         out = self.serial.readline()
-        out = out.decode()
-        out = out.strip()
-        if self.debug and len(out) > 0:
-            print("<< " + out)
+        if not binary:
+            out = out.decode()
+            out = out.strip()
+            if self.debug and len(out) > 0:
+                print("<< " + out)
+        elif self.debug and len(out) > 0:
+            for b in out:
+                print("<< 0b" + format(b, '08b'))
         return out
