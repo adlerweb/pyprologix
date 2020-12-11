@@ -82,6 +82,70 @@ class hp3478a(object):
             return "ExtΩ"
         else:
             return None
+    
+    def getRange(self, range=None, function=None):
+        if range == None:
+            range = self.status.range
+        if function == None:
+            function = self.status.function
+        
+        if range == 1:
+            if function == 1:
+                return "30mV"
+            elif function == 2:
+                return "300mV"
+            elif function == 3 or function == 4:
+                return "30Ω"
+            elif function == 5 or function == 6:
+                return "300mA"
+            else:
+                return None
+        elif range == 2:
+            if function == 1:
+                return "300mV"
+            elif function == 2:
+                return "3V"
+            elif function == 3 or function == 4:
+                return "300Ω"
+            elif function == 5 or function == 6:
+                return "3A"
+            else:
+                return None
+        elif range == 3:
+            if function == 1:
+                return "3V"
+            elif function == 2:
+                return "30V"
+            elif function == 3 or function == 4:
+                return "3kΩ"
+            else:
+                return None
+        elif range == 4:
+            if function == 1:
+                return "30V"
+            elif function == 2:
+                return "300V"
+            elif function == 3 or function == 4:
+                return "30kΩ"
+            else:
+                return None
+        elif range == 5:
+            if function == 1:
+                return "300V"
+            elif function == 3 or function == 4:
+                return "300kΩ"
+            else:
+                return None
+        elif range == 6:
+            if function == 3 or function == 4:
+                return "3MΩ"
+            else:
+                return None
+        elif range == 7:
+            if function == 3 or function == 4:
+                return "30MΩ"
+            else:
+                return None
 
     def getStatus(self):
         status = self.gpib.cmdPoll("B", binary=True)
@@ -137,3 +201,4 @@ print(test.getMeasure())
 print(test.getStatus())
 print(test.getDigits(test.status.digits))
 print(test.getFunction(test.status.function))
+print(test.getRange())
