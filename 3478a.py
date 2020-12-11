@@ -200,14 +200,6 @@ class hp3478a(object):
         if autoZero: setVal = 1
 
         self.gpib.cmdWrite("Z"+str(autoZero))
-        clear = None
-        while clear == None or len(clear) <= 5:
-            #Wait and clear serial buffer
-            sleep(0.75)
-            clear = self.gpib.cmdPoll(" ")
-            print(len(clear))
-
-        sleep(0.75)
 
         if noUpdate:
             if self.gpib.debug:
