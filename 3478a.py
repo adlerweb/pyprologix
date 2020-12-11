@@ -213,14 +213,48 @@ class hp3478a(object):
                 print("II AutoZero successfully changed to " + str(self.status.autoZero))
             return self.status.autoZero
 
+    def setDisplay(self, text, online=True):
+        if text == None or text == "":
+            # Reset display
+            self.gpib.cmdWrite("D1")
+            if self.gpib.debug:
+                print("Display reset to standard mode")
+            return True
+        
+        len = 0
+        for c in text:
+            if ord(c) < 32 or ord(c) > 95:
+                print("EE Character '" + c + "' is not supported")
+                return False
+            if c != "," and c != ".":
+                len = len+1
+            
+            if len > 12:
+                print("EE Text too long; max 12 characters")
+                return False
+            
+        cmd = "D2"
+        dt = ""
+        if not online:
+            cmd = "D3"
+            dt = " (updates paused)"
+
+        self.gpib.cmdWrite(cmd + text)
+        
+        if self.gpib.debug:
+            print("Display changed to '" + text + "'" + dt)
+
     def callReset(self):
         self.gpib.cmdClr(self.addr)
 
 test = hp3478a(22, port, debug=True)
 
+print(test.setDisplay("ADLERWEB.INFO"))
 print(test.getMeasure())
 print(test.getStatus())
 print(test.getDigits(test.status.digits))
 print(test.getFunction(test.status.function))
 print(test.getRange())
 print(test.setAutoZero(0))
+sleep(2)
+test.setDisplay(None)
