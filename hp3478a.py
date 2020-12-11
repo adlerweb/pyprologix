@@ -73,6 +73,7 @@ class hp3478a(object):
             Cal RAM enabled
         frontProts : bool
             Front/Read switch selected front measurement connectors
+            True = Front Port
         freq50Hz : bool
             Device set up for 50Hz operation. False = 60Hz.
         autoZero : bool
@@ -452,7 +453,27 @@ class hp3478a(object):
         self.status.function = (sb1 & 0b00000111)
 
         return self.status
-        
+
+    def getFrontRear(self) -> bool:
+        """Get position of Front/Rear switch
+
+        May also be used to easily determine if the device is responding
+
+        Returns
+        -------
+        bool
+            True  -> Front-Port
+            False -> Rear-Port
+            None  -> Device did not respond
+        """
+        check = self.gpib.cmdPoll("S")
+        if check == 1:
+            return True
+        elif check == 0:
+            return False
+        else:
+            return None
+
     def setAutoZero(self, autoZero: bool, noUpdate: bool=False) -> bool:
         """change Auto-Zero setting
 
