@@ -221,6 +221,9 @@ class hp3478a(object):
                 print("II AutoZero successfully changed to " + str(self.status.autoZero))
             return self.status.autoZero
 
+    def callReset(self):
+        self.gpib.cmdClr(self.addr)
+
 test = hp3478a(22, port, debug=True)
 
 print(test.getMeasure())
