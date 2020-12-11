@@ -247,7 +247,7 @@ class hp3478a(object):
         else:
             return None
     
-    def getRange(self, range: int=None, function: int=None) -> str:
+    def getRange(self, range: int=None, function: int=None, numeric: bool=False):
         """Get a human readable representation of currently used measurement range
 
         Parameters
@@ -260,10 +260,13 @@ class hp3478a(object):
             numeric function representation to interpret
             If None is given the last status reading is used
             by default None
+        numeric : bool, optional
+            If True return the maximum value as Float instead
+            of a human readable verison using SI-prefixes
 
         Returns
         -------
-        str|None
+        str|float|None
             Maximum measurement value in current range
         """
         if range == None:
@@ -273,59 +276,113 @@ class hp3478a(object):
         
         if range == 1:
             if function == 1:
-                return "30mV"
+                if numeric:
+                    return 0.03
+                else:
+                    return "30mV"
             elif function == 2:
-                return "300mV"
+                if numeric:
+                    return 0.3
+                else:
+                    return "300mV"
             elif function == 3 or function == 4:
-                return "30Ω"
+                if numeric:
+                    return 30.0
+                else:
+                    return "30Ω"
             elif function == 5 or function == 6:
-                return "300mA"
+                if numeric:
+                    return 0.3
+                else:
+                    return "300mA"
             else:
                 return None
         elif range == 2:
             if function == 1:
-                return "300mV"
+                if numeric:
+                    return 0.3
+                else:
+                    return "300mV"
             elif function == 2:
-                return "3V"
+                if numeric:
+                    return 3.0
+                else:
+                    return "3V"
             elif function == 3 or function == 4:
-                return "300Ω"
+                if numeric:
+                    return 300.0
+                else:
+                    return "300Ω"
             elif function == 5 or function == 6:
-                return "3A"
+                if numeric:
+                    return 3.0
+                else:
+                    return "3A"
             else:
                 return None
         elif range == 3:
             if function == 1:
-                return "3V"
+                if numeric:
+                    return 3.0
+                else:
+                    return "3V"
             elif function == 2:
-                return "30V"
+                if numeric:
+                    return 30.0
+                else:
+                    return "30V"
             elif function == 3 or function == 4:
-                return "3kΩ"
+                if numeric:
+                    return 3000.0
+                else:
+                    return "3kΩ"
             else:
                 return None
         elif range == 4:
             if function == 1:
-                return "30V"
+                if numeric:
+                    return 30.0
+                else:
+                    return "30V"
             elif function == 2:
-                return "300V"
+                if numeric:
+                    return 300.0
+                else:
+                    return "300V"
             elif function == 3 or function == 4:
-                return "30kΩ"
+                if numeric:
+                    return 30000.0
+                else:
+                    return "30kΩ"
             else:
                 return None
         elif range == 5:
             if function == 1:
-                return "300V"
+                if numeric:
+                    return 300.0
+                else:
+                    return "300V"
             elif function == 3 or function == 4:
-                return "300kΩ"
+                if numeric:
+                    return 300000.0
+                else:
+                    return "300kΩ"
             else:
                 return None
         elif range == 6:
             if function == 3 or function == 4:
-                return "3MΩ"
+                if numeric:
+                    return 3000000.0
+                else:
+                    return "3MΩ"
             else:
                 return None
         elif range == 7:
             if function == 3 or function == 4:
-                return "30MΩ"
+                if numeric:
+                    return 30000000.0
+                else:
+                    return "30MΩ"
             else:
                 return None
 
