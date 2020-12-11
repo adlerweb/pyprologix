@@ -35,11 +35,11 @@ class hp3478a(object):
         dac: int = None
         fetched: datetime = None
 
-    addr = None
-    gpib = None
+    addr: int = None
+    gpib: prologix = None
     status = hp3478aStatus()
 
-    def __init__(self, addr, port=None, baud=921600, timeout=0.25, prologixGpib=None, debug=False):
+    def __init__(self, addr: int, port: str=None, baud: int=921600, timeout: float=0.25, prologixGpib: prologix=None, debug: bool=False):
         if port == None and prologixGpib == None:
             print("!! You must supply either a serial port or a prologix object")
 
@@ -48,10 +48,10 @@ class hp3478a(object):
         else:
             self.gpib = prologixGpib
 
-    def getMeasure(self):
+    def getMeasure(self) -> float:
         return float(self.gpib.cmdPoll(" ", self.addr))
 
-    def getDigits(self, digits=None):
+    def getDigits(self, digits: int=None) -> str:
         if digits == None:
             digits = self.status.digits
 
@@ -63,7 +63,7 @@ class hp3478a(object):
             return 3.5
         return None
     
-    def getFunction(self, function=None):
+    def getFunction(self, function: int=None) -> str:
         if function == None:
             function = self.status.function
 
@@ -84,7 +84,7 @@ class hp3478a(object):
         else:
             return None
     
-    def getRange(self, range=None, function=None):
+    def getRange(self, range: int=None, function: int=None) -> str:
         if range == None:
             range = self.status.range
         if function == None:
@@ -148,7 +148,7 @@ class hp3478a(object):
             else:
                 return None
 
-    def getStatus(self):
+    def getStatus(self) -> object:
         #@TODO Reading is not reliable if device is busy
         status = self.gpib.cmdPoll("B", binary=True)
         
@@ -195,7 +195,7 @@ class hp3478a(object):
 
         return self.status
         
-    def setAutoZero(self, autoZero, noUpdate=False):
+    def setAutoZero(self, autoZero: bool, noUpdate: bool=False) -> bool:
         setVal = 0
         if autoZero: setVal = 1
 
@@ -213,7 +213,7 @@ class hp3478a(object):
                 print("II AutoZero successfully changed to " + str(self.status.autoZero))
             return self.status.autoZero
 
-    def setDisplay(self, text, online=True):
+    def setDisplay(self, text: str, online: bool=True) -> bool:
         if text == None or text == "":
             # Reset display
             self.gpib.cmdWrite("D1")

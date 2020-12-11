@@ -8,12 +8,12 @@ class prologix(object):
     Based on code by Daniel Stadelmann and Tobias Badertscher
     '''
 
-    serial = None
-    debug = False
-    timeout = 2.5
+    serial: object = None
+    debug: bool = False
+    timeout: float = 2.5
     EOL = "\n"
 
-    def __init__(self, port, baud=921600, timeout=2.5, debug=False):
+    def __init__(self, port: str, baud: int=921600, timeout: float=2.5, debug: bool=False):
         if timeout!=None:
             self.timeout = timeout
 
@@ -50,7 +50,7 @@ class prologix(object):
         self.cmdWrite("++read_tmo_ms " + str(self.timeout))     # Transmission timeout
         self.cmdWrite("++ifc")                                  # Assert IFC to indicate we're taking control of the bus
 
-    def cmdWrite(self, cmd, addr=None):
+    def cmdWrite(self, cmd: str, addr: int=None):
         if addr != None:
             self.cmdWrite("++addr " + str(addr), addr=None)
         self.serial.write(str.encode(cmd+self.EOL))
@@ -58,7 +58,7 @@ class prologix(object):
             print(">> " + cmd)
         self.serial.flush()
 
-    def cmdPoll(self, cmd, addr=None, binary=False, read=True):
+    def cmdPoll(self, cmd: str, addr: int=None, binary: bool=False, read: bool=True):
         self.serial.reset_input_buffer()
         self.cmdWrite(cmd, addr)
         if read:
@@ -74,5 +74,5 @@ class prologix(object):
                 print("<< 0b" + format(b, '08b'))
         return out
 
-    def cmdClr(self, addr=None):
+    def cmdClr(self, addr: int=None):
         self.cmdWrite("++clr", addr)
