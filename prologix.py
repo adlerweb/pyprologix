@@ -45,7 +45,7 @@ class prologix(object):
             by default False
 
         """
-        if timeout!=None:
+        if timeout is not None:
             self.timeout = timeout
 
         self.debug = debug
@@ -92,7 +92,7 @@ class prologix(object):
             address of the targeted device. If set an `++addr` will be issued first
             by default None
         """
-        if addr != None:
+        if addr is not None:
             """
             @TODO we probably could skip addr if this is equal to the last addr call and 
             we're sure noone else is using the bus to reduce bus load.

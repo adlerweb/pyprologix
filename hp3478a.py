@@ -177,7 +177,7 @@ class hp3478a(object):
         if port == None and prologixGpib == None:
             print("!! You must supply either a serial port or a prologix object")
 
-        if prologixGpib == None:
+        if prologixGpib is None:
             self.gpib = prologix(port=port, baud=baud, timeout=timeout, debug=debug)
         else:
             self.gpib = prologixGpib
@@ -208,7 +208,7 @@ class hp3478a(object):
             3.5, 4.5 or 5.5 for the current resolution
             None for invalid numbers
         """
-        if digits == None:
+        if digits is None:
             digits = self.status.digits
 
         if digits == 1:
@@ -242,7 +242,7 @@ class hp3478a(object):
             None for invalid numbers
 
         """
-        if function == None:
+        if function is None:
             function = self.status.function
 
         if function == 1:
@@ -284,9 +284,9 @@ class hp3478a(object):
         str|float|None
             Maximum measurement value in current range
         """
-        if range == None:
+        if range is None:
             range = self.status.range
-        if function == None:
+        if function is None:
             function = self.status.function
         
         if range == 1:
@@ -535,7 +535,7 @@ class hp3478a(object):
         bool
             Wheather setting the text worked as expected
         """
-        if text == None or text == "":
+        if text is None or text == "":
             # Reset display
             self.gpib.cmdWrite("D1", self.addr)
             if self.gpib.debug:
@@ -660,7 +660,7 @@ class hp3478a(object):
         elif range.lower() == "a" or range.lower() == "auto":
             newRange = "A"
         
-        if newRange == None:
+        if newRange is None:
             print("!! Invalid range")
             return False
         
