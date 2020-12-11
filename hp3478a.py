@@ -784,7 +784,7 @@ class hp3478a(object):
         Parameters
         ----------
         srq : int
-            Parameter must be two digits exactlz. Bits 0-5 of the binary representation
+            Parameter must be two digits exactly. Bits 0-5 of the binary representation
             are used to set the mask
         """
         self.gpib.cmdWrite(srq, self.addr)
