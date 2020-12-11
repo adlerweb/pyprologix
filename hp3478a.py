@@ -19,6 +19,14 @@ class hp3478a(object):
     addr: int = None
     gpib: prologix = None
 
+    VDC  = 1
+    VAC  = 2
+    Ω2W  = 3
+    Ω4W  = 4
+    ADC  = 5
+    AAC  = 6
+    EXTΩ = 7
+
     @dataclass
     class hp3478aStatus:
         """Current device status
@@ -531,6 +539,42 @@ class hp3478a(object):
             print(".. Display changed to '" + text + "'" + dt)
 
         #@TODO we could check status/errors to catch syntax errors here
+        return True
+
+    def setFunction(self, function : int, noUpdate: bool=False) -> bool:
+        """Change current measurement function
+
+        Parameters
+        ----------
+        function : int
+            numeric function representation
+            you may also use the following class constants:
+                VDC,VAC,Ω2W,Ω4W,ADC,AAC,EXTΩ
+        noUpdate : bool, optional
+            If True do not update status object to verify change was successful
+            by default False
+
+        Returns
+        -------
+        bool
+            Whether update succeeded or not; not verified if `noUpdate` was True
+        """
+        if function <= 0 or function > 7:
+            print("!! Invalid function")
+            return False
+        
+        self.gpib.cmdWrite("F" + str(function))
+
+        if not noUpdate:
+            self.getStatus()
+            if self.status.function != function:
+                print("!! Set failed. Tried to set " + self.getFunction(function) + " but device returned " + self.getFunction(self.status.function))
+                return False
+            elif self.gpib.debug:
+                print(".. Changed to function " + self.getFunction(function))
+        elif self.gpib.debug:
+            print(".. Probably changed to function " + self.getFunction(function))
+        
         return True
 
     def callReset(self):
