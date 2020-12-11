@@ -408,7 +408,7 @@ class hp3478a(object):
         hp3478aStatus
             Updated status object
         """
-        status = self.gpib.cmdPoll("B", binary=True)
+        status = self.gpib.cmdPoll("B", self.addr, binary=True)
         
         #Update last readout time
         self.status.fetched = datetime.datetime.now()
@@ -472,7 +472,7 @@ class hp3478a(object):
         setVal = 0
         if autoZero: setVal = 1
 
-        self.gpib.cmdWrite("Z"+str(autoZero))
+        self.gpib.cmdWrite("Z"+str(autoZero), self.addr)
 
         if noUpdate:
             if self.gpib.debug:
@@ -516,7 +516,7 @@ class hp3478a(object):
         """
         if text == None or text == "":
             # Reset display
-            self.gpib.cmdWrite("D1")
+            self.gpib.cmdWrite("D1", self.addr)
             if self.gpib.debug:
                 print("Display reset to standard mode")
             return True
@@ -539,7 +539,7 @@ class hp3478a(object):
             cmd = "D3"
             dt = " (updates paused)"
 
-        self.gpib.cmdWrite(cmd + text)
+        self.gpib.cmdWrite(cmd + text, self.addr)
         
         if self.gpib.debug:
             print(".. Display changed to '" + text + "'" + dt)
@@ -569,7 +569,7 @@ class hp3478a(object):
             print("!! Invalid function")
             return False
         
-        self.gpib.cmdWrite("F" + str(function))
+        self.gpib.cmdWrite("F" + str(function), self.addr)
 
         if not noUpdate:
             self.getStatus()
@@ -643,7 +643,7 @@ class hp3478a(object):
             print("!! Invalid range")
             return False
         
-        self.gpib.cmdWrite("R" + str(newRange))
+        self.gpib.cmdWrite("R" + str(newRange), self.addr)
 
         if not noUpdate:
             self.getStatus()
@@ -693,7 +693,7 @@ class hp3478a(object):
             print("!! Invalid digits")
             return False
 
-        self.gpib.cmdWrite("N"+newDigits)
+        self.gpib.cmdWrite("N"+newDigits, self.addr)
 
         if not noUpdate:
             self.getStatus()
@@ -733,7 +733,7 @@ class hp3478a(object):
             print("!! Invalid digits")
             return False
 
-        self.gpib.cmdWrite("T" + str(trigger))
+        self.gpib.cmdWrite("T" + str(trigger), self.addr)
 
         if not noUpdate:
             self.getStatus()
@@ -758,7 +758,7 @@ class hp3478a(object):
     def clearSPR(self):
         """Clear Serial Poll Register (SPR)
         """
-        self.gpib.cmdWrite("K")
+        self.gpib.cmdWrite("K", self.addr)
 
     def clearERR(self) -> bytearray:
         """Clear Error Registers
@@ -768,7 +768,7 @@ class hp3478a(object):
         bytearray
             Error register as octal digits
         """
-        return self.gpib.cmdPoll("E", binary=True)
+        return self.gpib.cmdPoll("E", self.addr, binary=True)
 
     def callReset(self):
         """Reset the device
