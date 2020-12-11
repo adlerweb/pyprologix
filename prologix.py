@@ -41,9 +41,13 @@ class prologix(object):
             print(".. Found Prologix compatible device on port " + port)
 
         #Initialize basic parameters
-        self.cmdWrite("++mode 1")
-        self.cmdWrite("++ifc")
-        self.cmdWrite("++auto 1")
+        self.cmdWrite("++mode 1")           # Change to controller mode
+        self.cmdWrite("++auto 0")           # Do not automatically read device after each command
+        self.cmdWrite("++eoi 0")            # Do not assert EOI after commandI
+        self.cmdWrite("++eos 0")            # Append CR+LF to all commands
+        self.cmdWrite("++eot_enable 0")     # Do not append EOT to USB output after EOI
+        self.cmdWrite("++read_tmo_ms 2500") # Transmission timeout
+        self.cmdWrite("++ifc")              # Assert IFC to indicate we're taking control of the bus
 
     def cmdWrite(self, cmd, addr=None):
         if addr != None:
