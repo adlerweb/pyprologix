@@ -27,7 +27,7 @@ class prologix(object):
             return None
 
         #Check for Prologix device
-        check = self.cmdPoll("++ver")
+        check = self.cmdPoll("++ver", read=False)
         if len(check)<=0:
             print("!! No responding device on port " + port + " found")
             self.serial = None
@@ -57,8 +57,11 @@ class prologix(object):
             print(">> " + cmd)
         self.serial.flush()
 
-    def cmdPoll(self, cmd, addr=None, binary=False):
+    def cmdPoll(self, cmd, addr=None, binary=False, read=True):
+        self.serial.reset_input_buffer()
         self.cmdWrite(cmd, addr)
+        if read:
+            self.cmdWrite("++read eoi", None)
         out = self.serial.readline()
         if not binary:
             out = out.decode()
