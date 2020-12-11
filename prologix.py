@@ -157,3 +157,23 @@ class prologix(object):
             by default None
         """
         self.cmdWrite("++clr", addr)
+
+    def escapeCmd(self, cmd : str) -> str:
+        """Escape device command so they traverse the Prologix protocol
+
+        Parameters
+        ----------
+        cmd : str
+            command to send
+
+        Returns
+        -------
+        str
+            escaped command to send
+        """
+        out = ""
+        for c in cmd:
+            if c == ord(10) or c == ord(13) or ord(27) or ord(43):
+                c = ord(27)+c
+            out = out + c
+        return out
