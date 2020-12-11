@@ -27,6 +27,12 @@ class hp3478a(object):
     AAC  = 6
     EXTΩ = 7
 
+    TRIG_INT = 1
+    TRIG_EXT = 2
+    TRIG_SIN = 3
+    TRIG_HLD = 4
+    TRIG_FST = 5
+
     @dataclass
     class hp3478aStatus:
         """Current device status
@@ -698,6 +704,54 @@ class hp3478a(object):
                 print(".. Set digits to " + str(int(self.getDigits())) + "½")
         elif self.gpib.debug:
             print(".. Probably changed digits to " + str(int(self.getDigits())) + "½")
+        
+        return True
+
+    def setTrigger(self, trigger : int, noUpdate : bool=False) -> bool:
+        """Change current measurement trigger
+
+        Parameters
+        ----------
+        trigger : int
+            desired trigger mode
+            1 or TRIG_INT -> Automatic internal trigger
+            2 or TRIG_EXT -> Abort current measurements; Start on LOW-edge or via GPIB
+            3 or TRIG_SIN -> Complete current measurement. New one on GPIB GET
+            4 or TRIG_HLD -> Abort current measurement. New one on GPIB GET
+            5 or TRIG_FST -> Same as TRIG_SIN but skip settling delay for AC
+
+        noUpdate : bool, optional
+            If True do not update status object to verify change was successful
+            by default False
+
+        Returns
+        -------
+        bool
+            Whether update succeeded or not; not verified if `noUpdate` was True
+        """
+        if trigger <= 0 or trigger > 5:
+            print("!! Invalid digits")
+            return False
+
+        self.gpib.cmdWrite("T" + str(trigger))
+
+        if not noUpdate:
+            self.getStatus()
+            if trigger == self.TRIG_EXT and not self.status.triggerExternal:
+                print("!! Tried to enable external trigger but flag did not update")
+                return False
+            elif trigger == self.TRIG_SIN and self.status.triggerInternal:
+                print("!! Tried to enable singe trigger but auto trigger flag is still active")
+                return False
+            elif trigger == self.TRIG_INT and not self.status.triggerInternal:
+                print("!! Tried to enable internal trigger but auto trigger flag is not active")
+                return False
+            elif trigger == self.TRIG_HLD and self.status.triggerInternal:
+                print("!! Tried to enable trigger hold but auto trigger flag is still active")
+                return False
+        
+        if self.gpib.debug:
+            print(".. Probably changed trigger to " + str(trigger))
         
         return True
 
