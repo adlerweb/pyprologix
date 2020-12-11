@@ -577,6 +577,88 @@ class hp3478a(object):
         
         return True
 
+    def setRange(self, range : str, noUpdate : bool=False) -> bool:
+        """Change current measurement range
+
+        Parameters
+        ----------
+        range : str|float
+            Range as SI-Value or float
+            Valid values:
+            A or AUTO to enable Auto-Range
+            30m,300m,3,30,300,3k,30k,300k,3M,30M
+            0.03,0.3,3,30,300,3000,30000,300000,3000000,30000000
+            Not all ranges can be used in all measurement functions
+        noUpdate : bool, optional
+            If True do not update status object to verify change was successful
+            by default False
+
+        Returns
+        -------
+        bool
+            Whether update succeeded or not; not verified if `noUpdate` was True
+        """
+        newRange = None
+        newRangeF = None
+        if range == "30m"       or range == 0.03:
+            newRange  = -2
+            newRangeF = 0.03
+        elif range == "300m"    or range == 0.3:
+            newRange  = -1
+            newRangeF = 0.3
+        elif range == "3"       or range == 3:
+            newRange  = 0
+            newRangeF = 3
+        elif range == "30"      or range == 30:
+            newRange  = 1
+            newRangeF = 30
+        elif range == "300"     or range == 300:
+            newRange  = 2
+            newRangeF = 300
+        elif range == "3k"      or range == 3000:
+            newRange  = 3
+            newRangeF = 3000
+        elif range == "30k"     or range == 30000:
+            newRange  = 4
+            newRangeF = 30000
+        elif range == "300k"    or range == 300000:
+            newRange  = 5
+            newRangeF = 300000
+        elif range == "3M"      or range == 3000000:
+            newRange  = 6
+            newRangeF = 3000000
+        elif range == "30M"     or range == 30000000:
+            newRange  = 7
+            newRangeF = 30000000
+        elif range.lower() == "a" or range.lower() == "auto":
+            newRange = "A"
+        
+        if newRange == None:
+            print("!! Invalid range")
+            return False
+        
+        self.gpib.cmdWrite("R" + str(newRange))
+
+        if not noUpdate:
+            self.getStatus()
+            if newRange == "A":
+                if not self.status.autoRange:
+                    print("!! Tried to enable Auto-Range but device refused")
+                    return False
+                elif self.gpib.debug:
+                    print(".. Enabled Auto-Range")
+            else:
+                newRangeC = self.getRange(numeric=True)
+                if newRangeF != newRangeC:
+                    print("!! Tried to set range to " + str(range) + " but device reported " + self.getRange())
+                    return False
+                elif self.gpib.debug:
+                    print(".. Set range to " + self.getRange())
+        elif self.gpib.debug:
+            print(".. Probably changed to range " + str(range))
+        
+        return True
+
     def callReset(self):
         """Reset the device
         """
