@@ -467,9 +467,9 @@ class hp3478a(object):
             None  -> Device did not respond
         """
         check = self.gpib.cmdPoll("S")
-        if check == 1:
+        if check == "1":
             return True
-        elif check == 0:
+        elif check == "0":
             return False
         else:
             return None
