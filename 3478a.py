@@ -61,6 +61,27 @@ class hp3478a(object):
         elif digits == 3:
             return 3.5
         return None
+    
+    def getFunction(self, function=None):
+        if function == None:
+            function = self.status.function
+
+        if function == 1:
+            return "VDC"
+        elif function == 2:
+            return "VAC"
+        elif function == 3:
+            return "Ω2W"
+        elif function == 4:
+            return "Ω4W"
+        elif function == 5:
+            return "ADC"
+        elif function == 6:
+            return "AAC"
+        elif function == 7:
+            return "ExtΩ"
+        else:
+            return None
 
     def getStatus(self):
         status = self.gpib.cmdPoll("B", binary=True)
@@ -115,3 +136,4 @@ test = hp3478a(22, port, debug=True)
 print(test.getMeasure())
 print(test.getStatus())
 print(test.getDigits(test.status.digits))
+print(test.getFunction(test.status.function))
