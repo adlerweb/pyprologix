@@ -1,5 +1,6 @@
 from prologix import prologix
 from dataclasses import dataclass
+from time import sleep
 import datetime
 
 class hp3478a(object):
@@ -475,6 +476,67 @@ class hp3478a(object):
             return False
         else:
             return None
+
+    def getCalibration(self, filename : str=None) -> bytearray:
+        """Read device calibration data
+
+        Code based on work by
+            Steve1515 (EEVblog)
+            fenugrec (EEVblog)
+            Luke Mester (https://mesterhome.com/)
+
+        Parameters
+        ----------
+        filename : str, optional
+            filename to save calibration to
+            file will be overwritten if it exists
+            by default None
+
+        Returns
+        -------
+        bytearray
+            Raw calibration data
+        """
+        
+        self.getStatus()
+        oldCal = self.status.triggerInternal
+        self.setTrigger(self.TRIG_HLD)
+
+        check = self.getFrontRear()
+        if check is None:
+            print("Can not connect to instrument")
+            return None
+
+        self.setDisplay("CAL READ 00%")
+
+        p  = 0
+        lp = 0
+        cdata = b""
+
+        for dbyte in range(0, 255):
+            din = self.gpib.cmdPoll(self.gpib.escapeCmd("W"+chr(dbyte)), binary=True)
+            cdata += din
+            p = (int)(dbyte/25.5)
+            if p != lp:
+                self.setDisplay("CAL READ " + str(p) + "0%")
+                lp = p
+
+        self.setDisplay("CAL READ OK")
+
+        if filename is not None:
+            fp = open("calibration.data", "wb")
+            for byte in cdata:
+                fp.write(byte.to_bytes(1, byteorder='big'))
+            fp.close()
+
+        sleep(1)
+        self.setDisplay(None)
+
+        if oldCal:
+            self.setTrigger(self.TRIG_INT)
+
+        return cdata
+
 
     def setAutoZero(self, autoZero: bool, noUpdate: bool=False) -> bool:
         """change Auto-Zero setting
