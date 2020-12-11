@@ -10,17 +10,18 @@ class prologix(object):
 
     serial = None
     debug = False
+    timeout = 2.5
     EOL = "\n"
 
-    def __init__(self, port, baud=921600, timeout=0.25, debug=False):
-        if timeout==None:
-            timeout=2
+    def __init__(self, port, baud=921600, timeout=2.5, debug=False):
+        if timeout!=None:
+            self.timeout = timeout
 
         self.debug = debug
 
         #Establish connection
         try:
-            self.serial = serial.Serial(port, baudrate=baud, timeout=timeout)
+            self.serial = serial.Serial(port, baudrate=baud, timeout=self.timeout)
         except serial.SerialException:
             print("!! Port " + port + " could not be opened")
             self.serial = None
@@ -41,13 +42,13 @@ class prologix(object):
             print(".. Found Prologix compatible device on port " + port)
 
         #Initialize basic parameters
-        self.cmdWrite("++mode 1")           # Change to controller mode
-        self.cmdWrite("++auto 0")           # Do not automatically read device after each command
-        self.cmdWrite("++eoi 0")            # Do not assert EOI after commandI
-        self.cmdWrite("++eos 0")            # Append CR+LF to all commands
-        self.cmdWrite("++eot_enable 0")     # Do not append EOT to USB output after EOI
-        self.cmdWrite("++read_tmo_ms 2500") # Transmission timeout
-        self.cmdWrite("++ifc")              # Assert IFC to indicate we're taking control of the bus
+        self.cmdWrite("++mode 1")                               # Change to controller mode
+        self.cmdWrite("++auto 0")                               # Do not automatically read device after each command
+        self.cmdWrite("++eoi 0")                                # Do not assert EOI after commandI
+        self.cmdWrite("++eos 0")                                # Append CR+LF to all commands
+        self.cmdWrite("++eot_enable 0")                         # Do not append EOT to USB output after EOI
+        self.cmdWrite("++read_tmo_ms " + str(self.timeout))     # Transmission timeout
+        self.cmdWrite("++ifc")                                  # Assert IFC to indicate we're taking control of the bus
 
     def cmdWrite(self, cmd, addr=None):
         if addr != None:
