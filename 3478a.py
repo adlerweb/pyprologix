@@ -16,7 +16,12 @@ class hp3478a(object):
             self.gpib = prologix(port=port, baud=baud, timeout=timeout, debug=debug)
         else:
             self.gpib = prologixGpib
+
+    def getMeasure(self):
+        return float(self.gpib.cmdPoll(" ", self.addr))
         
 
 
 test = hp3478a(22, port, debug=True)
+
+print(test.getMeasure())
