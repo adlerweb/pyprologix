@@ -3,17 +3,48 @@ import datetime
 import os
 
 class prologix(object):
-    '''
-    Class for handling prologix protocol based GPIB communication
+    """Class for handling prologix protocol based GPIB communication
+
     Based on code by Daniel Stadelmann and Tobias Badertscher
-    '''
+
+    Attributes
+    ----------
+    serial : object
+        PySerial object used to communicate with the prologix dongle
+    debug : bool
+        Whether to print verbose status messages and all communication
+    timeout : float
+        Timeout for serial and GPIB operations
+    EOL : str
+        Characters to append to all commands sent to USB
+
+    """
 
     serial: object = None
     debug: bool = False
     timeout: float = 2.5
-    EOL = "\n"
+    EOL: str = "\n"
 
     def __init__(self, port: str, baud: int=921600, timeout: float=2.5, debug: bool=False):
+        """
+
+        Parameters
+        ----------
+        port : str
+            path of the serial device to use. Example: `/dev/ttyACM0` or `COM3`
+        baud : int, optional
+            baudrate used for serial communication
+            921600 should work with most USB dongles
+            115200 or 9600 are common for devices using UART in between
+            by default 921600
+        timeout : float, optional
+            number of seconds to wait at maximum for serial data to arrive
+            by default 2.5 seconds
+        debug : bool, optional
+            Whether to print verbose status messages and all communication
+            by default False
+
+        """
         if timeout!=None:
             self.timeout = timeout
 
@@ -51,7 +82,21 @@ class prologix(object):
         self.cmdWrite("++ifc")                                  # Assert IFC to indicate we're taking control of the bus
 
     def cmdWrite(self, cmd: str, addr: int=None):
+        """Write a single, returnless command to a GPIB device
+
+        Parameters
+        ----------
+        cmd : str
+            The command string to be sent
+        addr : int, optional
+            address of the targeted device. If set an `++addr` will be issued first
+            by default None
+        """
         if addr != None:
+            """
+            @TODO we probably could skip addr if this is equal to the last addr call and 
+            we're sure noone else is using the bus to reduce bus load.
+            """
             self.cmdWrite("++addr " + str(addr), addr=None)
         self.serial.write(str.encode(cmd+self.EOL))
         if self.debug:
@@ -59,11 +104,39 @@ class prologix(object):
         self.serial.flush()
 
     def cmdPoll(self, cmd: str, addr: int=None, binary: bool=False, read: bool=True):
+        """Write a single command to a GPIB device and fetch response
+
+        Parameters
+        ----------
+        cmd : str
+            The command string to be sent
+        addr : int, optional
+            address of the targeted device. If set an `++addr` will be issued first
+            by default None
+        binary : bool, optional
+            If False responses are decoded and returned as String
+            If True resonses are unchanged and returned as byte array
+            by default False
+        read : bool, optional
+            Whether to issue a `++read eoi` before waiting for data
+            While required for GPIB device commands internal prologix commands
+                or while operating with `++auto 1` might return data without polling
+                first
+            by default True
+
+        Returns
+        -------
+        None|str|bytearray
+            None for empty responses
+            str or bytearray depending on `binary` parameter
+        """
         self.serial.reset_input_buffer()
         self.cmdWrite(cmd, addr)
         if read:
             self.cmdWrite("++read eoi", None)
         out = self.serial.readline()
+        if len(out) == 0:
+            return None
         if not binary:
             out = out.decode()
             out = out.strip()
@@ -75,4 +148,12 @@ class prologix(object):
         return out
 
     def cmdClr(self, addr: int=None):
+        """Send `SDC` (selected device clear) to device
+
+        Parameters
+        ----------
+        addr : int, optional
+            address of the targeted device. If set an `++addr` will be issued first
+            by default None
+        """
         self.cmdWrite("++clr", addr)
