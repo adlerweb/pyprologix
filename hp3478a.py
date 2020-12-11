@@ -755,6 +755,21 @@ class hp3478a(object):
         
         return True
 
+    def clearSPR(self):
+        """Clear Serial Poll Register (SPR)
+        """
+        self.gpib.cmdWrite("K")
+
+    def clearERR(self) -> bytearray:
+        """Clear Error Registers
+
+        Returns
+        -------
+        bytearray
+            Error register as octal digits
+        """
+        return self.gpib.cmdPoll("E", binary=True)
+
     def callReset(self):
         """Reset the device
         """
