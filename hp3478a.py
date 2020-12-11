@@ -659,6 +659,48 @@ class hp3478a(object):
         
         return True
 
+    def setDigits(self, digits : float, noUpdate : bool=False) -> bool:
+        """Change current measurement resolution
+
+        Parameters
+        ----------
+        digits : float
+            desired measurement resolution
+            Valid values: 3,3.5,4,4.5,5,5.5
+        noUpdate : bool, optional
+            If True do not update status object to verify change was successful
+            by default False
+
+        Returns
+        -------
+        bool
+            Whether update succeeded or not; not verified if `noUpdate` was True
+        """
+        newDigits = None
+        if digits == 3 or digits == 3.5:
+            newDigits = "3"
+        elif digits == 4 or digits == 4.5:
+            newDigits = "4"
+        elif digits == 5 or digits == 5.5:
+            newDigits = "5"
+        else:
+            print("!! Invalid digits")
+            return False
+
+        self.gpib.cmdWrite("N"+newDigits)
+
+        if not noUpdate:
+            self.getStatus()
+            if int(self.getDigits()) != int(newDigits):
+                print("!! Tried to set digits to " + str(int(newDigits)) + "½ but device reported " + str(int(self.getDigits())) + "½")
+                return False
+            elif self.gpib.debug:
+                print(".. Set digits to " + str(int(self.getDigits())) + "½")
+        elif self.gpib.debug:
+            print(".. Probably changed digits to " + str(int(self.getDigits())) + "½")
+        
+        return True
+
     def callReset(self):
         """Reset the device
         """
