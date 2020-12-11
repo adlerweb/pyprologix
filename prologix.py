@@ -68,3 +68,6 @@ class prologix(object):
             for b in out:
                 print("<< 0b" + format(b, '08b'))
         return out
+
+    def cmdClr(self, addr=None):
+        self.cmdWrite("++clr", addr)
