@@ -55,6 +55,7 @@ class prologix(object):
         self.serial.write(str.encode(cmd+self.EOL))
         if self.debug:
             print(">> " + cmd)
+        self.serial.flush()
 
     def cmdPoll(self, cmd, addr=None, binary=False):
         self.cmdWrite(cmd, addr)
