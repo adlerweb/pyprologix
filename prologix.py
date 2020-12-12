@@ -132,6 +132,9 @@ class prologix(object):
         """
         self.serial.reset_input_buffer()
         self.cmdWrite(cmd, addr)
+        if self.debug and binary:
+            for c in cmd:
+                print("  -> 0b" + format(ord(c), '08b'))
         if read:
             self.cmdWrite("++read eoi", None)
         out = self.serial.readline()
