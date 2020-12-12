@@ -193,7 +193,12 @@ class hp3478a(object):
         float
             last measurement
         """
-        return float(self.gpib.cmdPoll(" ", self.addr))
+        measurement = self.gpib.cmdPoll(" ", self.addr)
+
+        if measurement is None:
+            return None
+
+        return float(measurement)
 
     def getDigits(self, digits: int=None) -> float:
         """Get a human readable representation of currently used resolution
@@ -498,8 +503,7 @@ class hp3478a(object):
             Raw calibration data
         """
         
-        self.getStatus()
-        oldCal = self.status.triggerInternal
+        self.callReset()
         self.setTrigger(self.TRIG_HLD)
 
         check = self.getFrontRear()
@@ -532,8 +536,7 @@ class hp3478a(object):
         sleep(1)
         self.setDisplay(None)
 
-        if oldCal:
-            self.setTrigger(self.TRIG_INT)
+        self.callReset()
 
         return cdata
 
