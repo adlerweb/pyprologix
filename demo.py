@@ -6,22 +6,20 @@ port = "/dev/ttyACM0"
 
 test = hp3478a(22, port, debug=True)
 
-print(test.setDisplay("ADLERWEB.INFO"))
+test.callReset()
+test.setDisplay("ADLERWEB.INFO")
 print(test.getStatus())
 print(test.getDigits(test.status.digits))
 print(test.getFunction(test.status.function))
-print(test.getRange())
-print(test.setAutoZero(0))
-print(test.setTrigger(test.TRIG_EXT))
+print(test.getRange(test.status.digits))
 print(test.setFunction(test.Ω2W))
+print(test.setTrigger(test.TRIG_INT))
 print(test.setRange("3M"))
 print(test.setDigits(3.5))
 
-test.getCalibration("calibration.data")
+print(test.getMeasure())
 
 print(test.setRange("A"))
 print(test.setDigits(5))
-print(test.setTrigger(test.TRIG_INT))
-test.setDisplay(None)
-print(test.getFrontRear())
-print(test.getMeasure())
+
+test.getCalibration("calibration.data")
