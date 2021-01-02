@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object id="Frame_1" class="ttk.Frame">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object id="Labelframe_1" class="ttk.Labelframe">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">Current Measurement
+</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">1</property>
+        </layout>
+        <child>
+          <object id="Label_1" class="ttk.Label">
+            <property name="font">{monospace} 36 {bold}</property>
+            <property name="text" translatable="yes">UNKNOWN</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="rowspan">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object id="Label_2" class="ttk.Label">
+            <property name="text" translatable="yes">VDC</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object id="Label_3" class="ttk.Label">
+            <property name="text" translatable="yes">30V</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
