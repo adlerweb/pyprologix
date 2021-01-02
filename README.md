@@ -41,4 +41,4 @@ A simple TK gui showing current measurement value, function and range of a HP347
 
 ### InfluxDB
 
-A script polling a HP3478A multimeter every second and write the data to InfluxDB to be visualized using Grafana or Chronograf.
+A script polling a HP3478A multimeter every second and write the data to InfluxDB to be visualized using Grafana or Chronograf. Requires influxdb-python.
