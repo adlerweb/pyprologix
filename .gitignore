@@ -1,8 +1,11 @@
+<<<<<<< HEAD
 
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 
 ### Python ###
+=======
+>>>>>>> e8d57599aa1cad1159706383555c2f602bd3c194
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -55,7 +58,10 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+<<<<<<< HEAD
 pytestdebug.log
+=======
+>>>>>>> e8d57599aa1cad1159706383555c2f602bd3c194
 
 # Translations
 *.mo
@@ -76,7 +82,10 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+<<<<<<< HEAD
 doc/_build/
+=======
+>>>>>>> e8d57599aa1cad1159706383555c2f602bd3c194
 
 # PyBuilder
 target/
@@ -116,7 +125,10 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+<<<<<<< HEAD
 pythonenv*
+=======
+>>>>>>> e8d57599aa1cad1159706383555c2f602bd3c194
 
 # Spyder project settings
 .spyderproject
@@ -135,6 +147,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+<<<<<<< HEAD
 
 # pytype static type analyzer
 .pytype/
@@ -144,3 +157,5 @@ dmypy.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 s
+=======
+>>>>>>> e8d57599aa1cad1159706383555c2f602bd3c194
